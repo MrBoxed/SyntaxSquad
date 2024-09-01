@@ -1,0 +1,13 @@
+{
+    "manifest_version" : 3,
+    "version" : "1" ,
+    "name" : "SyntaxSquad",
+    "description": "An extension to remind you to read a page that you have saved",
+    "action": {
+        "default_popup":"index.html",
+        "default_icon": "./img/syntaxSquadLogo.png"
+    } ,
+    "permissions": [
+        "tabs"
+      ]
+}
