@@ -8,6 +8,17 @@
         "default_icon": "./img/syntaxSquadLogo.png"
     } ,
     "permissions": [
-        "tabs"
+        "tabs",
+        "storage",
+         "alarms"
       ]
+    ,
+
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self';" 
+    },
+
+  "background": {
+    "service_worker": "background.js"
+}
 }
