@@ -15,7 +15,19 @@ export function GetTaskList() {
             return [];
         }
 
-        console.log(taskList);
+        //console.log(taskList);
         return taskList;
     })
 }
+
+
+export function CreateTaskObject(id, title, url, alarmTime) {
+    return {
+        "cardId": id,
+        "cardTitle": title,
+        "cardUrl": url,
+        "alarmTime": alarmTime,
+        "completed": false
+    }
+}
+
