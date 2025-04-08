@@ -1,7 +1,7 @@
-import { CreateAlarm } from "./alarms.js";
 import { TASK_LIST_KEY } from "./task.js";
 
 let taskList = [];
+
 // Load tasks on page load
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -41,10 +41,10 @@ document.querySelector('.add-btn').addEventListener('click', addTask);
 // Save the task with alarm time
 document.getElementById('save-alarm-btn').addEventListener('click', function () {
 
-    // ::: CREATING TIME IN MS :::
-    const alarmTime = document.getElementById('alarm-time-input').value;
-
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+
+        // ::: CREATING TIME IN MS :::
+        const alarmTime = document.getElementById('alarm-time-input').value;
 
         const currentTab = tabs[0];
         const taskId = generateUniqueId();
@@ -59,10 +59,20 @@ document.getElementById('save-alarm-btn').addEventListener('click', function () 
         };
 
         taskList.push(newTask);
+
+        chrome.runtime.sendMessage({
+            action: 'createAlarm',
+            alarmData: newTask
+        },
+            (response) => {
+                if (response.success) {
+                    console.log('Alarm created successfully!');
+                } else {
+                    console.error('Failed to create alarm');
+                }
+            });
+
         chrome.storage.local.set({ [TASK_LIST_KEY]: taskList });
-
-        CreateAlarm(newTask);
-
         displayTask(taskId, taskName, taskUrl, alarmTime);
         updateTaskCount();
 

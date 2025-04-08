@@ -4,27 +4,37 @@ import { TASK_LIST_KEY } from "./task.js";
 export async function CreateAlarm(alarmData) {
 
     let taskList = [];
-    chrome.storage.local.get(TASK_LIST_KEY, function (result) {
-        taskList = result[TASK_LIST_KEY] || [];
-    });
 
-    if (taskList) {
-        taskList.forEach(element => {
-            if ((element.url == alarmData.url) && (element.alarmTime == alarmData.alarmTime)) {
-                console.log("Same alarm");
-                return;
-            }
-        });
-    }
+    await chrome.storage.local.get(TASK_LIST_KEY, function (result) {
+        taskList = result[TASK_LIST_KEY] || [];
+
+        if (taskList) {
+            taskList.forEach(element => {
+                if ((element.url == alarmData.url) && (element.alarmTime == alarmData.alarmTime)) {
+                    console.log("Same alarm");
+                    return;
+                }
+            });
+        }
+    });
 
     const inputDate = new Date(alarmData.alarmTime);
     const currentTime = new Date();
-    const timeInMs = inputDate - currentTime;
+    const timeDiff = inputDate - currentTime;
+    const timeInMs = Date.now() + timeDiff;
 
-    // if it doesn't exists then create alarm
-    chrome.alarms.create(alarmData.id, {
-        when: timeInMs // Time in ms
-    });
+    console.log("TIME_IN_MS: ", timeDiff);
 
-    console.log("Alarm Crated");
+    if (timeInMs < 0) {
+        console.log("The alarm is in past, cant set!");
+        return;
+    }
+    else {
+
+        // if it doesn't exists then create alarm
+        chrome.alarms.create(alarmData.id, {
+            when: timeInMs // Time in ms
+        });
+        console.log("Alarm Created");
+    }
 }
